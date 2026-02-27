@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rokt Reputation Management Dashboard</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/recharts/2.10.3/Recharts.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    body { margin: 0; font-family: 'Archivo', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+    * { box-sizing: border-box; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState } = React;
+    const { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine } = Recharts;
+
+    // ═══════════════════════════════════════════════════════════════
+    // DATA STORE — Update this section each month
+    // ═══════════════════════════════════════════════════════════════
+
+    const glassdoorMetrics = [
+      { month: "Jan 25", score: 3.7, totalReviews: 13, fiveStar: 11, negative: 0, removed: 0, source: "" },
+      { month: "Feb 25", score: 4.1, totalReviews: 8, fiveStar: 7, negative: 2, removed: 2, source: "NetReputation" },
+      { month: "Mar 25", score: 4.19, totalReviews: 3, fiveStar: 4, negative: 2, removed: 0, source: "" },
+      { month: "Apr 25", score: 4.16, totalReviews: 3, fiveStar: 2, negative: 1, removed: 2, source: "" },
+      { month: "May 25", score: 4.04, totalReviews: 4, fiveStar: 2, negative: 3, removed: 0, source: "" },
+      { month: "Jun 25", score: 4.03, totalReviews: 3, fiveStar: 1, negative: 0, removed: 0, source: "" },
+      { month: "Jul 25", score: 4.04, totalReviews: 4, fiveStar: 1, negative: 0, removed: 1, source: "" },
+      { month: "Aug 25", score: 3.98, totalReviews: 3, fiveStar: 1, negative: 2, removed: 1, source: "Self-service" },
+      { month: "Sep 25", score: 3.84, totalReviews: 8, fiveStar: 4, negative: 3, removed: 0, source: "" },
+      { month: "Oct 25", score: 4.08, totalReviews: 12, fiveStar: 9, negative: 0, removed: 0, source: "" },
+      { month: "Nov 25", score: 3.97, totalReviews: 9, fiveStar: 6, negative: 2, removed: 0, source: "" },
+      { month: "Dec 25", score: 3.9, totalReviews: 7, fiveStar: 0, negative: 7, removed: 1, source: "" },
+      { month: "Jan 26", score: 3.9, totalReviews: 7, fiveStar: 2, negative: 4, removed: 4, source: "NetReputation (2 GD), CorpReputation (1 GD), Rep Resolutions (1 Indeed)" },
+      { month: "Feb 26", score: 3.8, totalReviews: 9, fiveStar: 2, negative: 6, removed: 1, source: "Removify (1 GD) + CorpReputation claim overlap" },
+    ];
+
+    const officeReviews = [
+      { month: "Jan 25", NYC: 3.64, SF: null, Seattle: 5.0, Australia: 3.99, Canada: 4.0, UK: 4.12 },
+      { month: "Feb 25", NYC: 4.06, SF: 5.0, Seattle: null, Australia: 3.99, Canada: null, UK: 4.74 },
+      { month: "Mar 25", NYC: 4.14, SF: null, Seattle: null, Australia: 3.99, Canada: null, UK: 4.77 },
+      { month: "Apr 25", NYC: 4.11, SF: null, Seattle: null, Australia: 3.65, Canada: null, UK: 4.77 },
+      { month: "May 25", NYC: 3.99, SF: null, Seattle: null, Australia: 3.40, Canada: null, UK: 4.77 },
+      { month: "Jun 25", NYC: 4.00, SF: null, Seattle: null, Australia: 3.39, Canada: null, UK: 4.89 },
+      { month: "Jul 25", NYC: 4.00, SF: null, Seattle: null, Australia: 3.37, Canada: null, UK: 4.89 },
+      { month: "Aug 25", NYC: 3.94, SF: null, Seattle: null, Australia: 3.36, Canada: null, UK: 4.89 },
+      { month: "Sep 25", NYC: 3.87, SF: null, Seattle: null, Australia: 3.34, Canada: null, UK: 4.89 },
+      { month: "Oct 25", NYC: 4.08, SF: null, Seattle: null, Australia: 3.93, Canada: null, UK: 4.89 },
+      { month: "Nov 25", NYC: 3.97, SF: null, Seattle: 5.0, Australia: 3.91, Canada: null, UK: 4.89 },
+      { month: "Dec 25", NYC: null, SF: null, Seattle: null, Australia: null, Canada: null, UK: null },
+    ];
+
+    const interviewExperience = [
+      { month: "Jun 25", total: 1, positive: 0, neutral: 0, negative: 100, accept: 0, decline: 0, noOffer: 100, removed: 0 },
+      { month: "Jul 25", total: 6, positive: 66, neutral: 16, negative: 16, accept: 0, decline: 0, noOffer: 0, removed: 0 },
+      { month: "Aug 25", total: 11, positive: 27, neutral: 9, negative: 63, accept: 9, decline: 9, noOffer: 81, removed: 0 },
+      { month: "Sep 25", total: 4, positive: 50, neutral: 50, negative: 0, accept: 25, decline: 0, noOffer: 75, removed: 1 },
+      { month: "Oct 25", total: 14, positive: 36, neutral: 14, negative: 50, accept: 14.29, decline: 0, noOffer: 0, removed: 0 },
+      { month: "Nov 25", total: 14, positive: 50, neutral: 21, negative: 29, accept: 14.29, decline: 0, noOffer: 0, removed: 0 },
+      { month: "Dec 25", total: 1, positive: 0, neutral: 100, negative: 0, accept: 0, decline: 0, noOffer: 0, removed: 0 },
+      { month: "Jan 26", total: 3, positive: 66, neutral: 0, negative: 33, accept: 0, decline: 0, noOffer: 100, removed: 0 },
+      { month: "Feb 26", total: 2, positive: 100, neutral: 0, negative: 0, accept: 0, decline: 0, noOffer: 100, removed: 0 },
+    ];
+
+    const platformSummary = {
+      glassdoor: { score: 3.8, prevScore: 3.9, target: 4.0 },
+      indeed: { score: 4.4, prevScore: 4.4 },
+      blind: { score: 3.0, prevScore: 3.1 },
+    };
+
+    const agencyTracker = [
+      { firm: "Removify", status: "Active", monthsActive: 10, platform: "Glassdoor", progressYTD: "8 reviews removed", cadence: "Monthly", cost: "$500/mo + $500/removal", recentProgress: "Feb: 1 removal ('A place that wears you down fast'), $750 invoice. Flagged 3 new reviews (Feb 12-14). Jan: 0 removals, 3 flagged." },
+      { firm: "Net Reputation", status: "Active", monthsActive: 7, platform: "Glassdoor, Indeed", progressYTD: "6 reviews removed", cadence: "Monthly", cost: "$1,000/mo", recentProgress: "Jan: 2 Glassdoor removals — strongest month. Feb: no new removals yet." },
+      { firm: "Reputation Resolutions", status: "Active", monthsActive: 5, platform: "Indeed, Blind, Glassdoor", progressYTD: "4 reviews removed", cadence: "As needed", cost: "Per removal", recentProgress: "Jan: 1 Indeed removal. Feb: Glassdoor/Blind reviews still in progress." },
+      { firm: "CorpReputation", status: "Active", monthsActive: 2, platform: "Glassdoor", progressYTD: "2 reviews removed", cadence: "Per removal", cost: "Per removal (card on file)", recentProgress: "Feb: claims removal of same review as Removify ('A place that wears you down fast') — potential double-billing. Invoice $2,690 (Feb 4) + second invoice (Feb 13). Jan: 1 removal." },
+    ];
+
+    const monthlyReports = [
+      {
+        month: "February 2026",
+        status: "draft",
+        summary: "February is shaping up as the most negative month since December's spike. Through Feb 19, there are 9 new reviews with only 2 five-star and 6 negative (4x 1-star, 2x 2-star). Average rating of 2.44 — the lowest monthly average on record. The score dropped to 3.8, now 0.2 below the 4.0 target. Negative themes are intensifying: organizational churn, weak executive accountability, and career growth concerns dominate. A Director of Engineering review ('High-Speed Chaos: Great Pay, High Burnout') is particularly detailed and damaging. On the positive side, Removify confirmed 1 removal, and 3 new reviews are flagged for removal. However, both Removify and CorpReputation claim credit for the same removal — double-billing risk flagged. Interview sentiment is positive (2/2 positive).",
+        platformScores: [
+          { platform: "Glassdoor", score: 3.8, change: "↓ 0.1", vsTarget: "Below 4.0 target" },
+          { platform: "Indeed", score: 4.4, change: "No change", vsTarget: "Healthy" },
+          { platform: "Blind", score: 3.0, change: "↓ 0.1", vsTarget: "Declining" },
+        ],
+        reputationMgmt: {
+          removed: 1,
+          removedDetail: "1 GD via Removify ('A place that wears you down fast') — also claimed by CorpReputation. Double-billing risk.",
+          flagged: 3,
+          flaggedDetail: "Removify flagged 3 new reviews (Feb 12-14): Director of Engineering (2-star), Anonymous (5-star), Builder NYC (5-star). Director review marked In Progress for removal.",
+          partnerNotes: "Removify active with 1 confirmed removal and 3 new flags. CorpReputation invoiced $2,690 + second invoice — but claims same removal as Removify. NetReputation and Rep Resolutions quiet in Feb so far.",
+        },
+        reviewThemes: {
+          pros: [
+            { theme: "Learning density & exposure", detail: "Multiple reviewers value the volume of projects and skills gained. 'Experience Density: massive volume of projects in a very short time.' A Builder in NYC says it 'builds character.'" },
+            { theme: "Compensation & benefits", detail: "Pay, free lunch, and perks remain consistently praised even in negative reviews. 'The financial upside and experience per hour are significant.'" },
+            { theme: "Sharp, talented coworkers", detail: "Colleagues described as 'sharp and reliable' with high standards. Cross-team learning opportunities valued." },
+          ],
+          cons: [
+            { theme: "Organizational churn & start-stop cycle", detail: "The dominant theme. 'Initiatives are launched and killed so rapidly that meaningful progress is rare. 10+ initiatives die before impacting the business.' Constant re-orgs, shifting priorities, reversed decisions, hiring pushes followed by freezes." },
+            { theme: "Weak executive leadership & accountability", detail: "CEO described as making all calls with executives as 'yes-men.' 'Management takes zero responsibility in failed GTM strategy.' Senior leadership transparency severely criticized." },
+            { theme: "Career growth & mental health concerns", detail: "Reviews explicitly warn about career growth and mental health. 'Avoid this place if you care about career growth and mental health.' Performance reviews described as uninformed — managers 'don't interact or work with you on a personal level.'" },
+            { theme: "Retention crisis signal", detail: "'So many senior and talented people have left in the past few months.' Multiple reviews reference departures, layoffs of remote workers, and hiring freezes as confidence-shaking signals." },
+          ],
+        },
+        interviewExp: {
+          total: 2,
+          negativePct: 0,
+          acceptPct: 0,
+          notes: "2 interview reviews — both positive experiences (Product Design Intern, Software Engineer). Both resulted in No Offer.",
+        },
+        riskFlags: [
+          { severity: "high", flag: "Glassdoor below 4.0 for four consecutive months (Nov–Feb), now at lowest point (3.8)" },
+          { severity: "high", flag: "6 of 9 February reviews are negative — worst ratio since December's 7/7 spike" },
+          { severity: "high", flag: "Director of Engineering review is highly detailed and damaging — potential viral risk" },
+          { severity: "medium", flag: "Double-billing: Removify and CorpReputation both claim same removal — investigate" },
+          { severity: "medium", flag: "Multiple reviews reference senior departures and layoffs — retention narrative forming" },
+          { severity: "low", flag: "Blind dropped to 3.0, continuing downward trend" },
+        ],
+      },
+      {
+        month: "January 2026",
+        status: "draft",
+        summary: "January saw 7 new Glassdoor reviews with a polarized split: 2 five-star, 1 four-star, and 4 negative (2x 1-star, 2x 2-star). The overall score held at 3.90, still below the 4.0 target. Negative reviews centered on organizational churn, fear-based leadership, and management distrust. Positive reviews highlighted learning opportunities, trust in teams, and career growth. On the removal front, 4 removals across 3 agencies marked the strongest month yet — NetReputation (2 GD), CorpReputation (1 GD, their first), and Reputation Resolutions (1 Indeed). Interview volume was low (3 reviews) with 2 positive and 1 negative experience. Indeed stable at 4.4; Blind at 3.1.",
+        platformScores: [
+          { platform: "Glassdoor", score: 3.9, change: "No change", vsTarget: "Below 4.0 target" },
+          { platform: "Indeed", score: 4.4, change: "No change", vsTarget: "Healthy" },
+          { platform: "Blind", score: 3.1, change: "No change", vsTarget: "Monitoring" },
+        ],
+        reputationMgmt: {
+          removed: 4,
+          removedDetail: "2 GD via NetReputation ('Good Company, but beware some managers' + 'It's Fine'), 1 GD via CorpReputation ('Fear Is the Only Rule That Never Changes'), 1 Indeed via Reputation Resolutions ('Avoid it if you can')",
+          flagged: 3,
+          flaggedDetail: "3 new Glassdoor reviews detected by Removify (Jan 16, 17, 21); 1 marked In Progress for removal. Reputation Resolutions in contact with Glassdoor/Blind moderation teams.",
+          partnerNotes: "NetReputation delivered 2 GD removals — their strongest month. CorpReputation onboarded in Jan and delivered first removal on Jan 30. Reputation Resolutions removed 1 Indeed review and is actively working Glassdoor/Blind. Removify had 0 removals but is monitoring and flagging new reviews.",
+        },
+        reviewThemes: {
+          pros: [
+            { theme: "Learning & growth environment", detail: "Multiple reviewers praised real responsibility from the start, skill-building, and exposure to complex problems. 'Helps you build both skills and confidence.'" },
+            { theme: "Smart colleagues & teamwork", detail: "Strong technical peers, trust between team members, and collaborative culture. 'The team is strong technically.'" },
+            { theme: "Good work culture", detail: "Nice offices, good environment, and stock options noted as draws for newer employees." },
+          ],
+          cons: [
+            { theme: "Organizational churn & re-orgs", detail: "Constant restructuring, terminations, and shifting priorities. 'There are *constant* re-orgs, and turnover driven by the re-orgs.' Senior leadership accused of 'hot mess' management." },
+            { theme: "Fear-based leadership & management distrust", detail: "Staged marketing materials vs. reality. 'The marketing materials tout it as a great place to work with staged pictures of happy employees.' Management described as prioritizing fear over support." },
+            { theme: "Work-life balance & intensity", detail: "Unrealistic expectations, mandatory international trips with pressure dynamics, and extreme intensity. 'Its unrealistic to expect any worklife balance.'" },
+            { theme: "Curated reviews concern", detail: "Accusations that positive reviews are solicited by senior leadership. 'The reviews you see on here are highly curated from senior leadership.'" },
+          ],
+        },
+        interviewExp: {
+          total: 3,
+          negativePct: 33,
+          acceptPct: 0,
+          notes: "3 interview reviews: 2 positive (Data Scientist roles), 1 negative (Metrics Analyst — no follow-up after assessments). All resulted in No Offer.",
+        },
+        riskFlags: [
+          { severity: "high", flag: "Glassdoor has been below 4.0 for three consecutive months (Nov, Dec, Jan)" },
+          { severity: "medium", flag: "Zero five-star reviews in December followed by only 2 in January — positive volume trending down" },
+          { severity: "low", flag: "Blind remains stagnant at 3.1 with no review activity" },
+        ],
+      },
+    ];
+
+    // ═══════════════════════════════════════════════════════════════
+    // DASHBOARD COMPONENTS
+    // ═══════════════════════════════════════════════════════════════
+
+    const TABS = ["Overview", "Glassdoor", "Interview Reviews", "Removal Agencies", "Theme History", "Monthly Report"];
+    const COLORS = { primary: "#000000", accent: "#C20075", wine: "#480029", green: "#22c55e", red: "#ef4444", amber: "#f59e0b", blue: "#3b82f6", purple: "#8b5cf6", gray: "#86868B" };
+
+    function ScoreCard({ label, value, prev, target, suffix = "" }) {
+      const delta = prev ? (value - prev).toFixed(2) : null;
+      const isUp = delta > 0;
+      const isDown = delta < 0;
+      const belowTarget = target && value < target;
+      return (
+        <div className="bg-white rounded-lg border border-gray-200 p-4 flex flex-col gap-1">
+          <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">{label}</span>
+          <div className="flex items-baseline gap-2">
+            <span className={`text-2xl font-bold ${belowTarget ? "text-red-600" : "text-gray-900"}`}>{value}{suffix}</span>
+            {delta && (
+              <span className={`text-sm font-medium ${isUp ? "text-green-600" : isDown ? "text-red-600" : "text-gray-400"}`}>
+                {isUp ? "↑" : isDown ? "↓" : "—"} {Math.abs(delta)}
+              </span>
+            )}
+          </div>
+          {target && <span className="text-xs text-gray-400">Target: {target}+</span>}
+        </div>
+      );
+    }
+
+    function StatusBadge({ status }) {
+      const colors = { Active: "bg-green-100 text-green-700", Trial: "bg-yellow-100 text-yellow-700", Paused: "bg-gray-100 text-gray-500", Inactive: "bg-red-100 text-red-600", draft: "bg-blue-100 text-blue-700", final: "bg-green-100 text-green-700" };
+      return <span className={`px-2 py-1 rounded-full text-xs font-medium ${colors[status] || colors.Active}`}>{status}</span>;
+    }
+
+    function SeverityDot({ severity }) {
+      const c = { high: "bg-red-500", medium: "bg-yellow-500", low: "bg-blue-400" };
+      return <span className={`inline-block w-2 h-2 rounded-full ${c[severity] || c.low} mr-2`} />;
+    }
+
+    // ─── TAB: OVERVIEW ───
+    function OverviewTab() {
+      const totalRemoved = glassdoorMetrics.reduce((s, m) => s + (m.removed || 0), 0);
+      const totalNegative = glassdoorMetrics.reduce((s, m) => s + (m.negative || 0), 0);
+      return (
+        <div className="flex flex-col" style={{ gap: "1.5rem" }}>
+          <div>
+            <h2 className="text-lg font-semibold text-gray-900 mb-1">Platform Scores</h2>
+            <p className="text-sm text-gray-500 mb-3">Current standing across all review platforms</p>
+            <div className="grid grid-cols-3 gap-4">
+              <ScoreCard label="Glassdoor" value={platformSummary.glassdoor.score} prev={platformSummary.glassdoor.prevScore} target={platformSummary.glassdoor.target} />
+              <ScoreCard label="Indeed" value={platformSummary.indeed.score} prev={platformSummary.indeed.prevScore} />
+              <ScoreCard label="Blind" value={platformSummary.blind.score} prev={platformSummary.blind.prevScore} />
+            </div>
+          </div>
+          <div>
+            <h2 className="text-lg font-semibold text-gray-900 mb-3">Glassdoor Score Trend</h2>
+            <div className="bg-white rounded-lg border border-gray-200 p-4" style={{ height: 280 }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={glassdoorMetrics.filter(d => d.score)} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                  <XAxis dataKey="month" tick={{ fontSize: 11 }} />
+                  <YAxis domain={[3.4, 4.4]} tick={{ fontSize: 11 }} />
+                  <Tooltip />
+                  <ReferenceLine y={4.0} stroke={COLORS.red} strokeDasharray="6 3" label={{ value: "Target 4.0", position: "right", fontSize: 11, fill: COLORS.red }} />
+                  <Line type="monotone" dataKey="score" stroke={COLORS.accent} strokeWidth={2.5} dot={{ r: 4, fill: COLORS.accent }} name="Overall Score" />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+          <div className="grid grid-cols-3 gap-4">
+            <ScoreCard label="YTD Reviews Removed" value={totalRemoved} />
+            <ScoreCard label="YTD Negative Reviews" value={totalNegative} />
+            <ScoreCard label="Removal Rate" value={totalNegative > 0 ? ((totalRemoved / totalNegative) * 100).toFixed(0) : 0} suffix="%" />
+          </div>
+          <div>
+            <h2 className="text-lg font-semibold text-gray-900 mb-3">Review Volume & Sentiment</h2>
+            <div className="bg-white rounded-lg border border-gray-200 p-4" style={{ height: 280 }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={glassdoorMetrics.filter(d => d.totalReviews !== null)} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                  <XAxis dataKey="month" tick={{ fontSize: 11 }} />
+                  <YAxis tick={{ fontSize: 11 }} />
+                  <Tooltip />
+                  <Legend />
+                  <Bar dataKey="fiveStar" fill={COLORS.green} name="5-Star" radius={[2, 2, 0, 0]} />
+                  <Bar dataKey="negative" fill={COLORS.red} name="Negative" radius={[2, 2, 0, 0]} />
+                  <Bar dataKey="removed" fill={COLORS.purple} name="Removed" radius={[2, 2, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // ─── TAB: GLASSDOOR (combined with Office Breakdown) ───
+    function GlassdoorTab() {
+      const recent = glassdoorMetrics.filter(d => d.totalReviews !== null);
+      const curr = recent[recent.length - 1];
+      const prev = recent[recent.length - 2];
+
+      const reviewDelta = curr.totalReviews - (prev?.totalReviews || 0);
+      const negDelta = curr.negative - (prev?.negative || 0);
+      const removedText = curr.removed > 0 ? `${curr.removed} review${curr.removed > 1 ? "s" : ""} removed` : "no removals";
+
+      const recentOffice = officeReviews.filter(o => o.NYC || o.Australia || o.UK).slice(-1)[0] || {};
+      const officeEntries = [
+        { name: "NYC", val: recentOffice.NYC },
+        { name: "SF", val: recentOffice.SF },
+        { name: "Seattle", val: recentOffice.Seattle },
+        { name: "Australia", val: recentOffice.Australia },
+        { name: "Canada", val: recentOffice.Canada },
+        { name: "UK", val: recentOffice.UK },
+      ].filter(o => o.val != null).sort((a, b) => b.val - a.val);
+      const topOffice = officeEntries[0];
+      const bottomOffice = officeEntries[officeEntries.length - 1];
+
+      const offices = ["NYC", "SF", "Seattle", "Australia", "Canada", "UK"];
+      const officeColors = { NYC: COLORS.accent, SF: COLORS.green, Seattle: COLORS.amber, Australia: COLORS.blue, Canada: COLORS.purple, UK: COLORS.red };
+
+      return (
+        <div className="flex flex-col" style={{ gap: "1.5rem" }}>
+          <div className="rounded-lg p-4" style={{ backgroundColor: "#480029" }}>
+            <p className="text-white text-sm leading-relaxed">
+              <span className="font-semibold">{curr.month} Snapshot:</span>{" "}
+              {curr.totalReviews} reviews ({reviewDelta >= 0 ? "+" : ""}{reviewDelta} vs. prior month) with{" "}
+              <span className="font-semibold" style={{ color: curr.negative > (prev?.negative || 0) ? "#ff9999" : "#99ff99" }}>
+                {curr.negative} negative
+              </span>
+              {negDelta > 0 ? ` (up ${negDelta})` : negDelta < 0 ? ` (down ${Math.abs(negDelta)})` : ""}.{" "}
+              Score at {curr.score} (target 4.0). {removedText} via {curr.source || "agencies"}.
+              {topOffice ? ` Top office: ${topOffice.name} (${topOffice.val}).` : ""}
+              {bottomOffice && bottomOffice.name !== topOffice?.name ? ` Lowest: ${bottomOffice.name} (${bottomOffice.val}).` : ""}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="bg-white rounded-lg border border-gray-200 p-4">
+              <h3 className="text-sm font-semibold text-gray-700 mb-3">Overall Score Trend</h3>
+              <div style={{ height: 240 }}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={glassdoorMetrics.filter(d => d.score)} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                    <XAxis dataKey="month" tick={{ fontSize: 10 }} />
+                    <YAxis domain={[3.4, 4.4]} tick={{ fontSize: 10 }} />
+                    <Tooltip />
+                    <ReferenceLine y={4.0} stroke={COLORS.red} strokeDasharray="6 3" label={{ value: "4.0", position: "right", fontSize: 10, fill: COLORS.red }} />
+                    <Line type="monotone" dataKey="score" stroke={COLORS.accent} strokeWidth={2.5} dot={{ r: 3, fill: COLORS.accent }} name="Score" />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+            <div className="bg-white rounded-lg border border-gray-200 p-4">
+              <h3 className="text-sm font-semibold text-gray-700 mb-3">Review Volume & Removals</h3>
+              <div style={{ height: 240 }}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={glassdoorMetrics.filter(d => d.totalReviews !== null)} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                    <XAxis dataKey="month" tick={{ fontSize: 10 }} />
+                    <YAxis tick={{ fontSize: 10 }} />
+                    <Tooltip />
+                    <Legend wrapperStyle={{ fontSize: 11 }} />
+                    <Bar dataKey="fiveStar" fill={COLORS.green} name="5-Star" radius={[2, 2, 0, 0]} />
+                    <Bar dataKey="negative" fill={COLORS.red} name="Negative" radius={[2, 2, 0, 0]} />
+                    <Bar dataKey="removed" fill={COLORS.accent} name="Removed" radius={[2, 2, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h3 className="text-sm font-semibold text-gray-700 mb-3">Monthly Breakdown</h3>
+            <div className="grid grid-cols-2 gap-3">
+              {[...glassdoorMetrics].filter(d => d.totalReviews !== null).reverse().slice(0, 8).map((m, i) => (
+                <div key={i} className="bg-white rounded-lg border border-gray-200 p-4 flex flex-col" style={{ gap: "0.5rem" }}>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-semibold text-gray-900">{m.month}</span>
+                    <span className={`text-lg font-bold ${m.score < 4.0 ? "text-red-600" : "text-green-600"}`}>{m.score}</span>
+                  </div>
+                  <div className="flex gap-3 text-xs">
+                    <span className="text-gray-500">{m.totalReviews} reviews</span>
+                    <span className="text-green-600 font-medium">{m.fiveStar} ★5</span>
+                    <span className={`font-medium ${m.negative > 0 ? "text-red-600" : "text-gray-400"}`}>{m.negative} negative</span>
+                  </div>
+                  {m.removed > 0 && (
+                    <div className="flex items-center" style={{ gap: "0.375rem", marginTop: "0.25rem" }}>
+                      <span className="inline-block w-2 h-2 rounded-full" style={{ backgroundColor: "#C20075" }} />
+                      <span className="text-xs" style={{ color: "#C20075" }}>{m.removed} removed</span>
+                      {m.source && <span className="text-xs text-gray-400">— {m.source}</span>}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <h3 className="text-sm font-semibold text-gray-700 mb-1">Office Score Breakdown</h3>
+            <p className="text-xs text-gray-400 mb-3">SF, Seattle, and Canada have very limited volume.</p>
+            <div className="bg-white rounded-lg border border-gray-200 p-4" style={{ height: 280 }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={officeReviews} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                  <XAxis dataKey="month" tick={{ fontSize: 10 }} />
+                  <YAxis domain={[3.0, 5.2]} tick={{ fontSize: 10 }} />
+                  <Tooltip />
+                  <Legend wrapperStyle={{ fontSize: 11 }} />
+                  <ReferenceLine y={4.0} stroke={COLORS.gray} strokeDasharray="6 3" />
+                  {offices.map(o => <Line key={o} type="monotone" dataKey={o} stroke={officeColors[o]} strokeWidth={2} dot={{ r: 3 }} connectNulls name={o} />)}
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+            <div className="flex flex-wrap gap-2 mt-3">
+              {officeEntries.map((o, i) => (
+                <div key={i} className={`px-3 py-1 rounded-full text-xs font-medium border ${o.val < 4.0 ? "border-red-200 bg-red-50 text-red-700" : "border-green-200 bg-green-50 text-green-700"}`}>
+                  {o.name}: {o.val}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // ─── INTERVIEW QUALITATIVE THEMES ───
+    const interviewThemes = [
+      {
+        month: "Recent (Sep 2025 – Feb 2026)",
+        processThemes: [
+          { theme: "CCAT/EPP assessment barrier", detail: "Most common complaint. Candidates describe cognitive and personality tests as 'outdated', 'nothing to do with the real job', and frustrating when no follow-up occurs after completion.", sentiment: "negative" },
+          { theme: "Ghosting after assessments", detail: "Multiple candidates report completing assessments and never hearing back. 'Took over a month to get back to me.' Roles disappear from the website without notification.", sentiment: "negative" },
+          { theme: "Lengthy process", detail: "End-to-end timelines of 1–2 months reported. One Client Success candidate spent '1-2 weeks of my own time' on an 8-task final stage, only to be rejected.", sentiment: "negative" },
+          { theme: "Group interviews polarize", detail: "The in-person group interview format gets mixed reactions — some find it collaborative, others feel it's 'odd' with the announcement that 'only three will pass.'", sentiment: "mixed" },
+          { theme: "Strong engineering process", detail: "SWE candidates generally describe a well-structured flow: coding screen → system design → behavioral → bar raiser. Interviewers praised as 'smart', 'friendly', and 'accommodating.'", sentiment: "positive" },
+          { theme: "AI-forward questions", detail: "'How do you use AI in your life?' appears in Accelerator and early-career interviews — signals company positioning as AI-first.", sentiment: "positive" },
+        ],
+        outcomeThemes: [
+          { theme: "No Offer dominates", detail: "Vast majority of interview reviews result in No Offer. Even positive experiences end without an offer — suggests a highly selective funnel or pipeline issues." },
+          { theme: "Bar raiser with C-level", detail: "Final round often involves a C-level executive. One Senior SWE described the experience as 'ridiculous — they don't know much about business or product' and asked 'What's the biggest challenge in your personal life?'" },
+        ],
+      },
+    ];
+
+    // ─── TAB: INTERVIEW REVIEWS ───
+    function InterviewTab() {
+      const recent = interviewExperience.filter(d => d.total > 0);
+      const curr = recent[recent.length - 1];
+      const prev = recent.length >= 2 ? recent[recent.length - 2] : null;
+      const totalYTD = interviewExperience.reduce((s, m) => s + (m.total || 0), 0);
+
+      return (
+        <div className="flex flex-col" style={{ gap: "1.5rem" }}>
+          <div className="rounded-lg p-4" style={{ backgroundColor: "#480029" }}>
+            <p className="text-white text-sm leading-relaxed">
+              <span className="font-semibold">{curr?.month} Snapshot:</span>{" "}
+              {curr?.total} interview review{curr?.total !== 1 ? "s" : ""} — {curr?.positive > 0 ? `${curr.positive}% positive` : ""}{curr?.negative > 0 ? `, ${curr.negative}% negative` : curr?.positive > 0 ? ", 0% negative" : ""}.
+              {prev ? ` Prior month had ${prev.total} reviews with ${prev.negative}% negative.` : ""}
+              {" "}{totalYTD} total interview reviews YTD.
+              {" "}No Offer remains the dominant outcome across all months.
+            </p>
+          </div>
+
+          <div>
+            <h3 className="text-sm font-semibold text-gray-700 mb-3">Candidate Sentiment Over Time</h3>
+            <div className="bg-white rounded-lg border border-gray-200 p-4" style={{ height: 260 }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={interviewExperience.filter(d => d.total > 0)} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                  <XAxis dataKey="month" tick={{ fontSize: 11 }} />
+                  <YAxis tick={{ fontSize: 11 }} />
+                  <Tooltip />
+                  <Legend wrapperStyle={{ fontSize: 11 }} />
+                  <Bar dataKey="positive" fill={COLORS.green} name="Positive %" radius={[2, 2, 0, 0]} />
+                  <Bar dataKey="neutral" fill={COLORS.amber} name="Neutral %" radius={[2, 2, 0, 0]} />
+                  <Bar dataKey="negative" fill={COLORS.red} name="Negative %" radius={[2, 2, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+
+          <div>
+            <h3 className="text-sm font-semibold text-gray-700 mb-3">Interview Outcomes by Month</h3>
+            <div className="grid grid-cols-3 gap-3">
+              {interviewExperience.filter(d => d.total > 0).reverse().slice(0, 6).map((m, i) => (
+                <div key={i} className="bg-white rounded-lg border border-gray-200 p-3">
+                  <p className="text-sm font-semibold text-gray-900 mb-2">{m.month}</p>
+                  <p className="text-xs text-gray-500 mb-2">{m.total} reviews</p>
+                  <div className="flex flex-col" style={{ gap: "0.375rem" }}>
+                    {m.accept > 0 && <div className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-green-500" /><span className="text-xs text-green-700">Accepted: {m.accept}%</span></div>}
+                    {m.decline > 0 && <div className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-yellow-500" /><span className="text-xs text-yellow-700">Declined: {m.decline}%</span></div>}
+                    {m.noOffer > 0 && <div className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-red-500" /><span className="text-xs text-red-700">No Offer: {m.noOffer}%</span></div>}
+                    {m.removed > 0 && <div className="flex items-center gap-2"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: "#C20075" }} /><span className="text-xs" style={{ color: "#C20075" }}>{m.removed} removed</span></div>}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <h3 className="text-sm font-semibold text-gray-700 mb-3">Interview Process Themes</h3>
+            <p className="text-xs text-gray-400 mb-3">Qualitative patterns from interview reviews — what candidates are saying about the hiring process.</p>
+            {interviewThemes.map((period, pi) => (
+              <div key={pi} className="flex flex-col" style={{ gap: "1rem" }}>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-white rounded-lg border border-gray-200 p-5">
+                    <h4 className="text-xs font-semibold uppercase tracking-wide mb-3" style={{ color: "#480029" }}>Process Experience</h4>
+                    <div className="flex flex-col" style={{ gap: "0.75rem" }}>
+                      {period.processThemes.map((t, i) => (
+                        <div key={i} className={`pl-3`} style={{ borderLeft: `2px solid ${t.sentiment === "negative" ? "#ef4444" : t.sentiment === "positive" ? "#22c55e" : "#f59e0b"}` }}>
+                          <p className="text-sm font-medium text-gray-800">{t.theme}</p>
+                          <p className="text-xs text-gray-500 mt-1">{t.detail}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="bg-white rounded-lg border border-gray-200 p-5">
+                    <h4 className="text-xs font-semibold uppercase tracking-wide mb-3" style={{ color: "#480029" }}>Outcome Patterns</h4>
+                    <div className="flex flex-col" style={{ gap: "0.75rem" }}>
+                      {period.outcomeThemes.map((t, i) => (
+                        <div key={i} className="pl-3" style={{ borderLeft: "2px solid #d1d5db" }}>
+                          <p className="text-sm font-medium text-gray-800">{t.theme}</p>
+                          <p className="text-xs text-gray-500 mt-1">{t.detail}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    // ─── TAB: AGENCY TRACKER ───
+    function AgencyTab() {
+      const totalRemoved = glassdoorMetrics.reduce((s, m) => s + (m.removed || 0), 0);
+      return (
+        <div className="flex flex-col" style={{ gap: "1.5rem" }}>
+          <div>
+            <h2 className="text-lg font-semibold text-gray-900 mb-1">Agency Tracker</h2>
+            <p className="text-sm text-gray-500 mb-3">Performance and status of review removal partners</p>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            {agencyTracker.map((a) => (
+              <div key={a.firm} className="bg-white rounded-lg border border-gray-200 p-5 flex flex-col" style={{ gap: "0.75rem" }}>
+                <div className="flex items-center justify-between">
+                  <span className="text-base font-semibold text-gray-900">{a.firm}</span>
+                  <StatusBadge status={a.status} />
+                </div>
+                <div className="grid grid-cols-2 gap-2 text-sm">
+                  <div><span className="text-gray-500 text-xs">Platform Focus</span><p className="text-gray-800">{a.platform}</p></div>
+                  <div><span className="text-gray-500 text-xs">Months Active</span><p className="text-gray-800">{a.monthsActive}</p></div>
+                  <div><span className="text-gray-500 text-xs">YTD Progress</span><p className="text-gray-800">{a.progressYTD}</p></div>
+                  <div><span className="text-gray-500 text-xs">Cost</span><p className="text-gray-800">{a.cost}</p></div>
+                </div>
+                <div className="bg-gray-50 rounded p-2 text-sm">
+                  <span className="text-gray-500 text-xs">Recent Progress</span>
+                  <p className="text-gray-700">{a.recentProgress}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="bg-white rounded-lg border border-gray-200 p-4">
+            <h3 className="text-sm font-semibold text-gray-700 mb-2">Removal Summary</h3>
+            <div className="grid grid-cols-4 gap-4 text-center">
+              <div><p className="text-2xl font-bold" style={{ color: "#C20075" }}>{totalRemoved}</p><p className="text-xs text-gray-500">Total Removed YTD</p></div>
+              <div><p className="text-2xl font-bold text-gray-800">4</p><p className="text-xs text-gray-500">Active Agencies</p></div>
+              <div><p className="text-2xl font-bold text-green-600">3</p><p className="text-xs text-gray-500">Delivering Results</p></div>
+              <div><p className="text-2xl font-bold text-yellow-600">1</p><p className="text-xs text-gray-500">Double-Bill Flag</p></div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // ─── THEME HISTORY DATA ───
+    const historicalThemes = [
+      { month: "June 2025", pros: [{ theme: "Smart, passionate colleagues", detail: "Talented team members and collaborative culture consistently praised." }, { theme: "Compensation & benefits", detail: "Competitive pay and comprehensive benefits highlighted." }], cons: [{ theme: "Fear-based leadership", detail: "Multiple reviews cited intimidation and management by fear." }, { theme: "Unrealistic expectations", detail: "Excessive workload and constantly shifting goals." }] },
+      { month: "July 2025", pros: [{ theme: "Learning opportunities", detail: "Fast-paced environment with exposure to cutting-edge technology." }, { theme: "Competitive compensation", detail: "Strong equity packages and base salary remain a draw." }], cons: [{ theme: "Management trust deficit", detail: "Reviews describe micromanagement and lack of psychological safety." }, { theme: "High turnover concerns", detail: "Frequent departures and team instability referenced." }] },
+      { month: "August 2025", pros: [{ theme: "Mission-driven work", detail: "Excitement about the Transaction Moment and product impact." }, { theme: "Flexible work arrangements", detail: "Hybrid work policies appreciated." }], cons: [{ theme: "Reorg fatigue", detail: "Repeated restructuring creates uncertainty and frustration." }, { theme: "Performance management opacity", detail: "Unclear rubrics and shifting evaluation criteria." }] },
+      { month: "September 2025", pros: [{ theme: "Strong technical peers", detail: "Working alongside talented engineers and data scientists." }, { theme: "Growth potential", detail: "Company trajectory and market position seen as promising." }], cons: [{ theme: "Leadership communication gaps", detail: "Strategy changes not well communicated to ICs." }, { theme: "Work-life balance strain", detail: "Long hours and always-on culture taking a toll." }] },
+      { month: "October 2025", pros: [{ theme: "Compensation & benefits", detail: "Continued positive sentiment about pay and equity refresh." }, { theme: "Collaborative culture", detail: "Cross-functional collaboration improving." }], cons: [{ theme: "Organizational instability", detail: "Re-leveling and role changes creating anxiety." }, { theme: "Middle management challenges", detail: "Inconsistent quality of direct management." }] },
+      { month: "November 2025", pros: [{ theme: "Innovative product", detail: "Pride in the technology and its market differentiation." }, { theme: "Smart colleagues", detail: "High-caliber team members remain top positive." }], cons: [{ theme: "Fear-based leadership", detail: "Resurgent theme — reviews cite dismissive responses to feedback." }, { theme: "Performance management fairness", detail: "Shifting quotas and opaque evaluation continue as pain point." }] },
+      { month: "December 2025", pros: [{ theme: "Benefits & perks", detail: "End-of-year bonuses and holiday perks appreciated." }, { theme: "Technical excellence", detail: "Opportunities to work with ML/AI and large-scale systems." }], cons: [{ theme: "Mass negative review spike", detail: "All 7 December reviews were negative — coordinated or coincidental." }, { theme: "Leadership trust erosion", detail: "Pattern of broken promises and lack of transparency cited." }, { theme: "Career progression uncertainty", detail: "Unclear promotion timelines and criteria." }] },
+      { month: "January 2026", pros: [{ theme: "Learning & growth environment", detail: "Real responsibility, skill-building, and career development praised by multiple reviewers." }, { theme: "Smart colleagues & teamwork", detail: "Strong technical peers and trust-based collaboration highlighted." }], cons: [{ theme: "Organizational churn & re-orgs", detail: "Constant restructuring and turnover. Senior leadership accused of creating a 'hot mess.'" }, { theme: "Fear-based leadership", detail: "Staged employer brand vs. reality. Management distrust deepening." }, { theme: "Curated reviews concern", detail: "Accusations that positive reviews are solicited by senior leadership." }] },
+      { month: "February 2026", pros: [{ theme: "Learning density & exposure", detail: "Volume of projects and rapid skill development valued even by detractors." }, { theme: "Compensation & benefits", detail: "Consistently praised — pay, free lunch, perks remain a draw." }], cons: [{ theme: "Organizational churn & start-stop cycle", detail: "Dominant theme — 10+ initiatives killed before impact. Hiring push then layoffs." }, { theme: "Weak executive leadership", detail: "CEO top-down control, executive team as 'yes-men', zero accountability for failures." }, { theme: "Career growth & mental health", detail: "Explicit warnings about career damage and mental health toll." }, { theme: "Retention crisis signal", detail: "Senior departures, remote worker layoffs, and hiring freezes cited across multiple reviews." }] },
+    ];
+
+    function getAllThemes() {
+      const fromReports = monthlyReports.map(r => ({ month: r.month, pros: r.reviewThemes.pros, cons: r.reviewThemes.cons }));
+      return [...historicalThemes, ...fromReports];
+    }
+
+    function getThemeFrequency(allThemes) {
+      const freq = {};
+      allThemes.forEach(m => {
+        [...m.cons].forEach(c => {
+          const key = c.theme;
+          if (!freq[key]) freq[key] = { theme: key, count: 0, months: [], type: "con" };
+          freq[key].count++;
+          freq[key].months.push(m.month);
+        });
+      });
+      return Object.values(freq).sort((a, b) => b.count - a.count);
+    }
+
+    // ─── TAB: THEME HISTORY ───
+    function ThemeHistoryTab() {
+      const allThemes = getAllThemes();
+      const recurring = getThemeFrequency(allThemes);
+
+      return (
+        <div className="flex flex-col" style={{ gap: "1.5rem" }}>
+          <div>
+            <h2 className="text-lg font-semibold text-gray-900 mb-1">Thematic Analysis — Historical View</h2>
+            <p className="text-sm" style={{ color: "#86868B" }}>How review themes have evolved over time. Tracks recurring concerns and positive trends.</p>
+          </div>
+
+          <div className="bg-white rounded-lg border border-gray-200 p-5">
+            <h3 className="text-sm font-semibold uppercase tracking-wide mb-3" style={{ color: "#480029" }}>Recurring Concerns (Risk Patterns)</h3>
+            <p className="text-xs text-gray-500 mb-4">Negative themes that appear across multiple months — higher frequency signals systemic issues.</p>
+            <div className="flex flex-col" style={{ gap: "0.75rem" }}>
+              {recurring.filter(r => r.count >= 2).map((r, i) => (
+                <div key={i} className="flex items-start gap-3 py-2 border-b border-gray-100">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold" style={{ backgroundColor: r.count >= 4 ? "#ef4444" : r.count >= 3 ? "#f59e0b" : "#86868B" }}>
+                    {r.count}
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-gray-900">{r.theme}</p>
+                    <p className="text-xs text-gray-500 mt-1">Appeared in: {r.months.join(", ")}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg border border-gray-200 p-5">
+            <h3 className="text-sm font-semibold uppercase tracking-wide mb-4" style={{ color: "#480029" }}>Month-by-Month Theme Timeline</h3>
+            <div className="flex flex-col" style={{ gap: "1.25rem" }}>
+              {[...allThemes].reverse().map((m, i) => (
+                <div key={i} className="pl-4" style={{ borderLeft: "3px solid #C20075" }}>
+                  <h4 className="text-sm font-semibold text-gray-900 mb-2">{m.month}</h4>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-xs font-semibold text-green-700 uppercase mb-2">Positives</p>
+                      {m.pros.map((p, j) => (
+                        <div key={j} className="mb-2">
+                          <p className="text-sm font-medium text-gray-800">{p.theme}</p>
+                          <p className="text-xs text-gray-500">{p.detail}</p>
+                        </div>
+                      ))}
+                    </div>
+                    <div>
+                      <p className="text-xs font-semibold text-red-700 uppercase mb-2">Concerns</p>
+                      {m.cons.map((c, j) => (
+                        <div key={j} className="mb-2">
+                          <p className="text-sm font-medium text-gray-800">{c.theme}</p>
+                          <p className="text-xs text-gray-500">{c.detail}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // ─── TAB: MONTHLY REPORT ───
+    function MonthlyReportTab() {
+      const [selectedIdx, setSelectedIdx] = useState(0);
+      const report = monthlyReports[selectedIdx];
+
+      if (!report) {
+        return (
+          <div className="flex flex-col items-center justify-center py-16 text-gray-400">
+            <p className="text-lg font-medium">No reports yet</p>
+            <p className="text-sm mt-1">Trigger a monthly update to generate the first report.</p>
+          </div>
+        );
+      }
+
+      return (
+        <div className="flex flex-col" style={{ gap: "1.5rem" }}>
+          <div className="flex items-center gap-3">
+            <h2 className="text-lg font-semibold text-gray-900">Monthly Analysis</h2>
+            <select
+              value={selectedIdx}
+              onChange={(e) => setSelectedIdx(Number(e.target.value))}
+              className="border border-gray-300 rounded px-3 py-1 text-sm bg-white"
+            >
+              {monthlyReports.map((r, i) => (
+                <option key={i} value={i}>{r.month}</option>
+              ))}
+            </select>
+            <StatusBadge status={report.status} />
+          </div>
+
+          <div className="bg-white rounded-lg border border-gray-200 p-5">
+            <h3 className="text-sm font-semibold uppercase tracking-wide mb-2">Executive Summary</h3>
+            <p className="text-sm text-gray-700 leading-relaxed">{report.summary}</p>
+          </div>
+
+          <div className="bg-white rounded-lg border border-gray-200 p-5">
+            <h3 className="text-sm font-semibold uppercase tracking-wide mb-3">Platform Scores</h3>
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-gray-200">
+                  <th className="text-left py-2 px-3 text-xs font-semibold text-gray-500">Platform</th>
+                  <th className="text-left py-2 px-3 text-xs font-semibold text-gray-500">Score</th>
+                  <th className="text-left py-2 px-3 text-xs font-semibold text-gray-500">vs. Prior Month</th>
+                  <th className="text-left py-2 px-3 text-xs font-semibold text-gray-500">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {report.platformScores.map((p, i) => (
+                  <tr key={i} className="border-b border-gray-100">
+                    <td className="py-2 px-3 font-medium text-gray-800">{p.platform}</td>
+                    <td className={`py-2 px-3 font-bold ${p.score < 4.0 && p.platform === "Glassdoor" ? "text-red-600" : "text-gray-900"}`}>{p.score}</td>
+                    <td className="py-2 px-3 text-gray-600">{p.change}</td>
+                    <td className="py-2 px-3"><span className={`px-2 py-1 rounded-full text-xs font-medium ${p.vsTarget.includes("Below") ? "bg-red-100 text-red-700" : p.vsTarget === "Healthy" ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-600"}`}>{p.vsTarget}</span></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="bg-white rounded-lg border border-gray-200 p-5">
+            <h3 className="text-sm font-semibold uppercase tracking-wide mb-3">Reputation Management</h3>
+            <div className="grid grid-cols-2 gap-4 mb-4">
+              <div className="bg-green-50 rounded-lg p-4 text-center">
+                <p className="text-2xl font-bold text-green-700">{report.reputationMgmt.removed}</p>
+                <p className="text-xs text-green-600 mt-1">Reviews Removed</p>
+                <p className="text-xs text-gray-500 mt-1">{report.reputationMgmt.removedDetail}</p>
+              </div>
+              <div className="bg-yellow-50 rounded-lg p-4 text-center">
+                <p className="text-2xl font-bold text-yellow-700">{report.reputationMgmt.flagged}</p>
+                <p className="text-xs text-yellow-600 mt-1">Reviews Flagged</p>
+                <p className="text-xs text-gray-500 mt-1">{report.reputationMgmt.flaggedDetail}</p>
+              </div>
+            </div>
+            <div className="bg-gray-50 rounded p-3">
+              <p className="text-xs font-semibold text-gray-500 uppercase mb-1">Partner Notes</p>
+              <p className="text-sm text-gray-700">{report.reputationMgmt.partnerNotes}</p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="bg-white rounded-lg border border-gray-200 p-5">
+              <h3 className="text-sm font-semibold text-green-700 uppercase tracking-wide mb-3">Pros — What's Working</h3>
+              <div className="flex flex-col" style={{ gap: "0.75rem" }}>
+                {report.reviewThemes.pros.map((t, i) => (
+                  <div key={i} className="pl-3" style={{ borderLeft: "2px solid #22c55e" }}>
+                    <p className="text-sm font-medium text-gray-800">{t.theme}</p>
+                    <p className="text-xs text-gray-600 mt-1">{t.detail}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="bg-white rounded-lg border border-gray-200 p-5">
+              <h3 className="text-sm font-semibold text-red-700 uppercase tracking-wide mb-3">Cons — Risk Areas</h3>
+              <div className="flex flex-col" style={{ gap: "0.75rem" }}>
+                {report.reviewThemes.cons.map((t, i) => (
+                  <div key={i} className="pl-3" style={{ borderLeft: "2px solid #ef4444" }}>
+                    <p className="text-sm font-medium text-gray-800">{t.theme}</p>
+                    <p className="text-xs text-gray-600 mt-1">{t.detail}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg border border-gray-200 p-5">
+            <h3 className="text-sm font-semibold uppercase tracking-wide mb-3">Interview Experience</h3>
+            {report.interviewExp.total ? (
+              <div className="grid grid-cols-3 gap-4 text-center">
+                <div><p className="text-2xl font-bold text-gray-800">{report.interviewExp.total}</p><p className="text-xs text-gray-500">Total Reviews</p></div>
+                <div><p className="text-2xl font-bold text-red-600">{report.interviewExp.negativePct}%</p><p className="text-xs text-gray-500">Negative</p></div>
+                <div><p className="text-2xl font-bold text-green-600">{report.interviewExp.acceptPct}%</p><p className="text-xs text-gray-500">Accept Rate</p></div>
+              </div>
+            ) : (
+              <p className="text-sm text-gray-500 italic">{report.interviewExp.notes}</p>
+            )}
+          </div>
+
+          <div className="bg-white rounded-lg border border-gray-200 p-5">
+            <h3 className="text-sm font-semibold uppercase tracking-wide mb-3">Risk Flags</h3>
+            <div className="flex flex-col" style={{ gap: "0.5rem" }}>
+              {report.riskFlags.map((r, i) => (
+                <div key={i} className="flex items-start py-1">
+                  <SeverityDot severity={r.severity} />
+                  <div className="flex-1">
+                    <span className={`text-xs font-semibold uppercase mr-2 ${r.severity === "high" ? "text-red-600" : r.severity === "medium" ? "text-yellow-600" : "text-blue-500"}`}>{r.severity}</span>
+                    <span className="text-sm text-gray-700">{r.flag}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // ─── MAIN DASHBOARD ───
+    function ReputationDashboard() {
+      const [activeTab, setActiveTab] = useState(0);
+      const lastUpdated = "February 19, 2026";
+      const tabContent = [<OverviewTab />, <GlassdoorTab />, <InterviewTab />, <AgencyTab />, <ThemeHistoryTab />, <MonthlyReportTab />];
+
+      return (
+        <div className="min-h-screen bg-gray-50">
+          <div style={{ backgroundColor: "#480029" }} className="px-6 py-1">
+            <span className="text-white text-xs font-semibold tracking-widest uppercase" style={{ fontFamily: "Archivo, sans-serif" }}>Rokt</span>
+          </div>
+          <div className="bg-white border-b border-gray-200 px-6 py-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-xl font-bold text-gray-900">Reputation Management Dashboard</h1>
+                <p className="text-sm" style={{ color: "#86868B" }}>Glassdoor · Indeed · Blind — Employer Brand Tracking</p>
+              </div>
+              <div className="text-right">
+                <span className="text-xs" style={{ color: "#86868B" }}>Last updated</span>
+                <p className="text-sm font-medium" style={{ color: "#C20075" }}>{lastUpdated}</p>
+              </div>
+            </div>
+          </div>
+          <div className="bg-white border-b border-gray-200 px-6">
+            <div className="flex gap-1 overflow-x-auto">
+              {TABS.map((tab, i) => (
+                <button key={tab} onClick={() => setActiveTab(i)}
+                  className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap cursor-pointer ${activeTab === i ? "text-gray-900" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}
+                  style={activeTab === i ? { borderBottomColor: "#C20075", color: "#480029" } : {}}
+                >{tab}</button>
+              ))}
+            </div>
+          </div>
+          <div className="px-6 py-6" style={{ maxWidth: "72rem" }}>{tabContent[activeTab]}</div>
+        </div>
+      );
+    }
+
+    ReactDOM.render(<ReputationDashboard />, document.getElementById("root"));
+  </script>
+</body>
+</html>
