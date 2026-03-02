@@ -3,6 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
+  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet" />
+  <meta name="bingbot" content="noindex, nofollow" />
+  <meta name="GPTBot" content="noindex, nofollow" />
+  <meta name="CCBot" content="noindex, nofollow" />
+  <meta name="anthropic-index" content="disallow" />
+  <meta name="ai-content-restrictions" content="noindex, nofollow, noscrape" />
   <title>Rokt Reputation Management Dashboard</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
@@ -40,22 +47,24 @@
       { month: "Nov 25", score: 3.97, totalReviews: 9, fiveStar: 6, negative: 2, removed: 0, source: "" },
       { month: "Dec 25", score: 3.9, totalReviews: 7, fiveStar: 0, negative: 7, removed: 1, source: "" },
       { month: "Jan 26", score: 3.9, totalReviews: 7, fiveStar: 2, negative: 4, removed: 4, source: "NetReputation (2 GD), CorpReputation (1 GD), Rep Resolutions (1 Indeed)" },
-      { month: "Feb 26", score: 3.8, totalReviews: 9, fiveStar: 2, negative: 6, removed: 1, source: "Removify (1 GD) + CorpReputation claim overlap" },
+      { month: "Feb 26", score: 3.8, totalReviews: 11, fiveStar: 2, negative: 7, removed: 4, source: "Removify (3 GD), CorpReputation (1 GD)" },
     ];
 
     const officeReviews = [
-      { month: "Jan 25", NYC: 3.64, SF: null, Seattle: 5.0, Australia: 3.99, Canada: 4.0, UK: 4.12 },
-      { month: "Feb 25", NYC: 4.06, SF: 5.0, Seattle: null, Australia: 3.99, Canada: null, UK: 4.74 },
-      { month: "Mar 25", NYC: 4.14, SF: null, Seattle: null, Australia: 3.99, Canada: null, UK: 4.77 },
-      { month: "Apr 25", NYC: 4.11, SF: null, Seattle: null, Australia: 3.65, Canada: null, UK: 4.77 },
-      { month: "May 25", NYC: 3.99, SF: null, Seattle: null, Australia: 3.40, Canada: null, UK: 4.77 },
-      { month: "Jun 25", NYC: 4.00, SF: null, Seattle: null, Australia: 3.39, Canada: null, UK: 4.89 },
-      { month: "Jul 25", NYC: 4.00, SF: null, Seattle: null, Australia: 3.37, Canada: null, UK: 4.89 },
-      { month: "Aug 25", NYC: 3.94, SF: null, Seattle: null, Australia: 3.36, Canada: null, UK: 4.89 },
-      { month: "Sep 25", NYC: 3.87, SF: null, Seattle: null, Australia: 3.34, Canada: null, UK: 4.89 },
-      { month: "Oct 25", NYC: 4.08, SF: null, Seattle: null, Australia: 3.93, Canada: null, UK: 4.89 },
-      { month: "Nov 25", NYC: 3.97, SF: null, Seattle: 5.0, Australia: 3.91, Canada: null, UK: 4.89 },
-      { month: "Dec 25", NYC: null, SF: null, Seattle: null, Australia: null, Canada: null, UK: null },
+      { month: "Jan 25", NYC: 3.64, SF: null, Seattle: 5.0, Australia: 3.99, Canada: 4.0, UK: 4.12, Tokyo: null },
+      { month: "Feb 25", NYC: 4.06, SF: 5.0, Seattle: null, Australia: 3.99, Canada: null, UK: 4.74, Tokyo: null },
+      { month: "Mar 25", NYC: 4.14, SF: null, Seattle: null, Australia: 3.99, Canada: null, UK: 4.77, Tokyo: null },
+      { month: "Apr 25", NYC: 4.11, SF: null, Seattle: null, Australia: 3.65, Canada: null, UK: 4.77, Tokyo: null },
+      { month: "May 25", NYC: 3.99, SF: null, Seattle: null, Australia: 3.40, Canada: null, UK: 4.77, Tokyo: null },
+      { month: "Jun 25", NYC: 4.00, SF: null, Seattle: null, Australia: 3.39, Canada: null, UK: 4.89, Tokyo: null },
+      { month: "Jul 25", NYC: 4.00, SF: null, Seattle: null, Australia: 3.37, Canada: null, UK: 4.89, Tokyo: null },
+      { month: "Aug 25", NYC: 3.94, SF: null, Seattle: null, Australia: 3.36, Canada: null, UK: 4.89, Tokyo: null },
+      { month: "Sep 25", NYC: 3.87, SF: null, Seattle: null, Australia: 3.34, Canada: null, UK: 4.89, Tokyo: null },
+      { month: "Oct 25", NYC: 4.08, SF: null, Seattle: null, Australia: 3.93, Canada: null, UK: 4.89, Tokyo: null },
+      { month: "Nov 25", NYC: 3.97, SF: null, Seattle: 5.0, Australia: 3.91, Canada: null, UK: 4.89, Tokyo: null },
+      { month: "Dec 25", NYC: null, SF: null, Seattle: null, Australia: null, Canada: null, UK: null, Tokyo: null },
+      { month: "Jan 26", NYC: 3.85, SF: 5.0, Seattle: 5.0, Australia: 4.1, Canada: null, UK: 4.9, Tokyo: 5.0 },
+      { month: "Feb 26", NYC: 3.8, SF: 5.0, Seattle: 5.0, Australia: 4.2, Canada: null, UK: 4.9, Tokyo: 5.0 },
     ];
 
     const interviewExperience = [
@@ -67,7 +76,7 @@
       { month: "Nov 25", total: 14, positive: 50, neutral: 21, negative: 29, accept: 14.29, decline: 0, noOffer: 0, removed: 0 },
       { month: "Dec 25", total: 1, positive: 0, neutral: 100, negative: 0, accept: 0, decline: 0, noOffer: 0, removed: 0 },
       { month: "Jan 26", total: 3, positive: 66, neutral: 0, negative: 33, accept: 0, decline: 0, noOffer: 100, removed: 0 },
-      { month: "Feb 26", total: 2, positive: 100, neutral: 0, negative: 0, accept: 0, decline: 0, noOffer: 100, removed: 0 },
+      { month: "Feb 26", total: 3, positive: 66, neutral: 33, negative: 0, accept: 0, decline: 0, noOffer: 100, removed: 0 },
     ];
 
     const platformSummary = {
@@ -77,28 +86,28 @@
     };
 
     const agencyTracker = [
-      { firm: "Removify", status: "Active", monthsActive: 10, platform: "Glassdoor", progressYTD: "8 reviews removed", cadence: "Monthly", cost: "$500/mo + $500/removal", recentProgress: "Feb: 1 removal ('A place that wears you down fast'), $750 invoice. Flagged 3 new reviews (Feb 12-14). Jan: 0 removals, 3 flagged." },
-      { firm: "Net Reputation", status: "Active", monthsActive: 7, platform: "Glassdoor, Indeed", progressYTD: "6 reviews removed", cadence: "Monthly", cost: "$1,000/mo", recentProgress: "Jan: 2 Glassdoor removals — strongest month. Feb: no new removals yet." },
-      { firm: "Reputation Resolutions", status: "Active", monthsActive: 5, platform: "Indeed, Blind, Glassdoor", progressYTD: "4 reviews removed", cadence: "As needed", cost: "Per removal", recentProgress: "Jan: 1 Indeed removal. Feb: Glassdoor/Blind reviews still in progress." },
-      { firm: "CorpReputation", status: "Active", monthsActive: 2, platform: "Glassdoor", progressYTD: "2 reviews removed", cadence: "Per removal", cost: "Per removal (card on file)", recentProgress: "Feb: claims removal of same review as Removify ('A place that wears you down fast') — potential double-billing. Invoice $2,690 (Feb 4) + second invoice (Feb 13). Jan: 1 removal." },
+      { firm: "Removify", status: "Active", monthsActive: 10, platform: "Glassdoor", progressAllTime: "11 reviews removed", cadence: "Monthly", cost: "$500/mo + $500/removal", recentProgress: "Feb: 3 removals — 'A place that wears you down fast' (Feb 19), 'Chaos, minimum room for growth' + 'Fear Is the Only Rule That Never Changes' (Feb 23). $750 + $1,500 invoices. New review flagged In Progress: Executive Assistant (Feb 22). Jan: 0 removals, 3 flagged." },
+      { firm: "Net Reputation", status: "Active", monthsActive: 7, platform: "Glassdoor, Indeed", progressAllTime: "6 reviews removed", cadence: "Monthly", cost: "$1,000/mo", recentProgress: "Jan: 2 Glassdoor removals — strongest month. Feb: no new removals yet." },
+      { firm: "Reputation Resolutions", status: "Active", monthsActive: 5, platform: "Indeed, Blind, Glassdoor", progressAllTime: "4 reviews removed", cadence: "As needed", cost: "Per removal", recentProgress: "Jan: 1 Indeed removal. Feb: Glassdoor/Blind reviews still in progress." },
+      { firm: "CorpReputation", status: "Active", monthsActive: 2, platform: "Glassdoor", progressAllTime: "3 reviews removed", cadence: "Per removal", cost: "Per removal (card on file)", recentProgress: "Feb: 1 confirmed removal — 'High expectations paired with constant internal churn' (1-star, Feb 27). Declined payment on invoice UQFFO3K6-0003 — card retry needed. Jan: 1 removal." },
     ];
 
     const monthlyReports = [
       {
         month: "February 2026",
         status: "draft",
-        summary: "February is shaping up as the most negative month since December's spike. Through Feb 19, there are 9 new reviews with only 2 five-star and 6 negative (4x 1-star, 2x 2-star). Average rating of 2.44 — the lowest monthly average on record. The score dropped to 3.8, now 0.2 below the 4.0 target. Negative themes are intensifying: organizational churn, weak executive accountability, and career growth concerns dominate. A Director of Engineering review ('High-Speed Chaos: Great Pay, High Burnout') is particularly detailed and damaging. On the positive side, Removify confirmed 1 removal, and 3 new reviews are flagged for removal. However, both Removify and CorpReputation claim credit for the same removal — double-billing risk flagged. Interview sentiment is positive (2/2 positive).",
+        summary: "February closed as the most negative month since December's spike. 11 new reviews with only 2 five-star and 7 negative (5x 1-star, 2x 2-star). Average rating of 2.45 — the lowest monthly average on record. The score dropped to 3.8, now 0.2 below the 4.0 target. Negative themes are intensifying: organizational churn, weak executive accountability, career growth concerns, and abusive leadership dominate. Two Executive Assistant reviews (Feb 22, 26) are particularly harsh — 'Choose any company but Rokt' and 'Zero support and transparency.' On the positive side, 4 reviews were removed across Removify (3) and CorpReputation (1). 3 interview reviews — 2 positive, 1 neutral, all No Offer.",
         platformScores: [
           { platform: "Glassdoor", score: 3.8, change: "↓ 0.1", vsTarget: "Below 4.0 target" },
           { platform: "Indeed", score: 4.4, change: "No change", vsTarget: "Healthy" },
           { platform: "Blind", score: 3.0, change: "↓ 0.1", vsTarget: "Declining" },
         ],
         reputationMgmt: {
-          removed: 1,
-          removedDetail: "1 GD via Removify ('A place that wears you down fast') — also claimed by CorpReputation. Double-billing risk.",
+          removed: 4,
+          removedDetail: "3 GD via Removify ('A place that wears you down fast', 'Chaos, minimum room for growth', 'Fear Is the Only Rule That Never Changes') + 1 GD via CorpReputation ('High expectations paired with constant internal churn').",
           flagged: 3,
           flaggedDetail: "Removify flagged 3 new reviews (Feb 12-14): Director of Engineering (2-star), Anonymous (5-star), Builder NYC (5-star). Director review marked In Progress for removal.",
-          partnerNotes: "Removify active with 1 confirmed removal and 3 new flags. CorpReputation invoiced $2,690 + second invoice — but claims same removal as Removify. NetReputation and Rep Resolutions quiet in Feb so far.",
+          partnerNotes: "Removify active with 3 confirmed removals and 1 new flag in progress. CorpReputation confirmed 1 removal — card retry needed on invoice UQFFO3K6-0003. NetReputation and Rep Resolutions quiet in Feb.",
         },
         reviewThemes: {
           pros: [
@@ -114,10 +123,10 @@
           ],
         },
         interviewExp: {
-          total: 2,
+          total: 3,
           negativePct: 0,
           acceptPct: 0,
-          notes: "2 interview reviews — both positive experiences (Product Design Intern, Software Engineer). Both resulted in No Offer.",
+          notes: "3 interview reviews — 2 positive (Product Design Intern, Software Engineer), 1 neutral (SWE New Grad). All resulted in No Offer.",
         },
         riskFlags: [
           { severity: "high", flag: "Glassdoor below 4.0 for four consecutive months (Nov–Feb), now at lowest point (3.8)" },
@@ -178,6 +187,37 @@
     const TABS = ["Overview", "Glassdoor", "Interview Reviews", "Removal Agencies", "Theme History", "Monthly Report"];
     const COLORS = { primary: "#000000", accent: "#C20075", wine: "#480029", green: "#22c55e", red: "#ef4444", amber: "#f59e0b", blue: "#3b82f6", purple: "#8b5cf6", gray: "#86868B" };
 
+    // All months in the dataset for filter options
+    const ALL_MONTHS = glassdoorMetrics.map(d => d.month);
+
+    // Date range filter component
+    function DateRangeFilter({ startMonth, endMonth, onStartChange, onEndChange }) {
+      return (
+        <div className="flex items-center gap-2 text-sm">
+          <span className="text-gray-500 text-xs font-medium">Range:</span>
+          <select value={startMonth} onChange={e => onStartChange(e.target.value)}
+            className="border border-gray-300 rounded px-2 py-1 text-xs bg-white" style={{ minWidth: 90 }}>
+            {ALL_MONTHS.map(m => <option key={m} value={m}>{m}</option>)}
+          </select>
+          <span className="text-gray-400 text-xs">to</span>
+          <select value={endMonth} onChange={e => onEndChange(e.target.value)}
+            className="border border-gray-300 rounded px-2 py-1 text-xs bg-white" style={{ minWidth: 90 }}>
+            {ALL_MONTHS.map(m => <option key={m} value={m}>{m}</option>)}
+          </select>
+        </div>
+      );
+    }
+
+    // Helper to filter data arrays by month range
+    function filterByRange(data, startMonth, endMonth, monthKey = "month") {
+      const startIdx = ALL_MONTHS.indexOf(startMonth);
+      const endIdx = ALL_MONTHS.indexOf(endMonth);
+      return data.filter(d => {
+        const idx = ALL_MONTHS.indexOf(d[monthKey]);
+        return idx >= startIdx && idx <= endIdx;
+      });
+    }
+
     function ScoreCard({ label, value, prev, target, suffix = "" }) {
       const delta = prev ? (value - prev).toFixed(2) : null;
       const isUp = delta > 0;
@@ -210,9 +250,10 @@
     }
 
     // ─── TAB: OVERVIEW ───
-    function OverviewTab() {
-      const totalRemoved = glassdoorMetrics.reduce((s, m) => s + (m.removed || 0), 0);
-      const totalNegative = glassdoorMetrics.reduce((s, m) => s + (m.negative || 0), 0);
+    function OverviewTab({ startMonth, endMonth }) {
+      const filtered = filterByRange(glassdoorMetrics, startMonth, endMonth);
+      const totalRemoved = filtered.reduce((s, m) => s + (m.removed || 0), 0);
+      const totalNegative = filtered.reduce((s, m) => s + (m.negative || 0), 0);
       return (
         <div className="flex flex-col" style={{ gap: "1.5rem" }}>
           <div>
@@ -228,7 +269,7 @@
             <h2 className="text-lg font-semibold text-gray-900 mb-3">Glassdoor Score Trend</h2>
             <div className="bg-white rounded-lg border border-gray-200 p-4" style={{ height: 280 }}>
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={glassdoorMetrics.filter(d => d.score)} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
+                <LineChart data={filtered.filter(d => d.score)} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
                   <XAxis dataKey="month" tick={{ fontSize: 11 }} />
                   <YAxis domain={[3.4, 4.4]} tick={{ fontSize: 11 }} />
@@ -240,15 +281,15 @@
             </div>
           </div>
           <div className="grid grid-cols-3 gap-4">
-            <ScoreCard label="YTD Reviews Removed" value={totalRemoved} />
-            <ScoreCard label="YTD Negative Reviews" value={totalNegative} />
+            <ScoreCard label="Reviews Removed" value={totalRemoved} />
+            <ScoreCard label="Negative Reviews" value={totalNegative} />
             <ScoreCard label="Removal Rate" value={totalNegative > 0 ? ((totalRemoved / totalNegative) * 100).toFixed(0) : 0} suffix="%" />
           </div>
           <div>
             <h2 className="text-lg font-semibold text-gray-900 mb-3">Review Volume & Sentiment</h2>
             <div className="bg-white rounded-lg border border-gray-200 p-4" style={{ height: 280 }}>
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={glassdoorMetrics.filter(d => d.totalReviews !== null)} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
+                <BarChart data={filtered.filter(d => d.totalReviews !== null)} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
                   <XAxis dataKey="month" tick={{ fontSize: 11 }} />
                   <YAxis tick={{ fontSize: 11 }} />
@@ -266,16 +307,18 @@
     }
 
     // ─── TAB: GLASSDOOR (combined with Office Breakdown) ───
-    function GlassdoorTab() {
-      const recent = glassdoorMetrics.filter(d => d.totalReviews !== null);
+    function GlassdoorTab({ startMonth, endMonth }) {
+      const filtered = filterByRange(glassdoorMetrics, startMonth, endMonth);
+      const recent = filtered.filter(d => d.totalReviews !== null);
       const curr = recent[recent.length - 1];
-      const prev = recent[recent.length - 2];
+      const prev = recent.length >= 2 ? recent[recent.length - 2] : null;
 
-      const reviewDelta = curr.totalReviews - (prev?.totalReviews || 0);
-      const negDelta = curr.negative - (prev?.negative || 0);
-      const removedText = curr.removed > 0 ? `${curr.removed} review${curr.removed > 1 ? "s" : ""} removed` : "no removals";
+      const reviewDelta = curr ? curr.totalReviews - (prev?.totalReviews || 0) : 0;
+      const negDelta = curr ? curr.negative - (prev?.negative || 0) : 0;
+      const removedText = curr && curr.removed > 0 ? `${curr.removed} review${curr.removed > 1 ? "s" : ""} removed` : "no removals";
 
-      const recentOffice = officeReviews.filter(o => o.NYC || o.Australia || o.UK).slice(-1)[0] || {};
+      const filteredOffice = filterByRange(officeReviews, startMonth, endMonth);
+      const recentOffice = filteredOffice.filter(o => o.NYC || o.Australia || o.UK).slice(-1)[0] || {};
       const officeEntries = [
         { name: "NYC", val: recentOffice.NYC },
         { name: "SF", val: recentOffice.SF },
@@ -283,12 +326,15 @@
         { name: "Australia", val: recentOffice.Australia },
         { name: "Canada", val: recentOffice.Canada },
         { name: "UK", val: recentOffice.UK },
+        { name: "Tokyo", val: recentOffice.Tokyo },
       ].filter(o => o.val != null).sort((a, b) => b.val - a.val);
       const topOffice = officeEntries[0];
       const bottomOffice = officeEntries[officeEntries.length - 1];
 
-      const offices = ["NYC", "SF", "Seattle", "Australia", "Canada", "UK"];
-      const officeColors = { NYC: COLORS.accent, SF: COLORS.green, Seattle: COLORS.amber, Australia: COLORS.blue, Canada: COLORS.purple, UK: COLORS.red };
+      const offices = ["NYC", "SF", "Seattle", "Australia", "Canada", "UK", "Tokyo"];
+      const officeColors = { NYC: COLORS.accent, SF: COLORS.green, Seattle: COLORS.amber, Australia: COLORS.blue, Canada: COLORS.purple, UK: COLORS.red, Tokyo: "#64748b" };
+
+      if (!curr) return <div className="text-center py-16 text-gray-400"><p className="text-lg font-medium">No data in selected range</p></div>;
 
       return (
         <div className="flex flex-col" style={{ gap: "1.5rem" }}>
@@ -311,7 +357,7 @@
               <h3 className="text-sm font-semibold text-gray-700 mb-3">Overall Score Trend</h3>
               <div style={{ height: 240 }}>
                 <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={glassdoorMetrics.filter(d => d.score)} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
+                  <LineChart data={filtered.filter(d => d.score)} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
                     <XAxis dataKey="month" tick={{ fontSize: 10 }} />
                     <YAxis domain={[3.4, 4.4]} tick={{ fontSize: 10 }} />
@@ -326,7 +372,7 @@
               <h3 className="text-sm font-semibold text-gray-700 mb-3">Review Volume & Removals</h3>
               <div style={{ height: 240 }}>
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={glassdoorMetrics.filter(d => d.totalReviews !== null)} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
+                  <BarChart data={filtered.filter(d => d.totalReviews !== null)} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
                     <XAxis dataKey="month" tick={{ fontSize: 10 }} />
                     <YAxis tick={{ fontSize: 10 }} />
@@ -344,16 +390,16 @@
           <div>
             <h3 className="text-sm font-semibold text-gray-700 mb-3">Monthly Breakdown</h3>
             <div className="grid grid-cols-2 gap-3">
-              {[...glassdoorMetrics].filter(d => d.totalReviews !== null).reverse().slice(0, 8).map((m, i) => (
+              {[...recent].reverse().slice(0, 8).map((m, i) => (
                 <div key={i} className="bg-white rounded-lg border border-gray-200 p-4 flex flex-col" style={{ gap: "0.5rem" }}>
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-semibold text-gray-900">{m.month}</span>
                     <span className={`text-lg font-bold ${m.score < 4.0 ? "text-red-600" : "text-green-600"}`}>{m.score}</span>
                   </div>
-                  <div className="flex gap-3 text-xs">
+                  <div className="flex text-xs" style={{ gap: "0.75rem" }}>
                     <span className="text-gray-500">{m.totalReviews} reviews</span>
                     <span className="text-green-600 font-medium">{m.fiveStar} ★5</span>
-                    <span className={`font-medium ${m.negative > 0 ? "text-red-600" : "text-gray-400"}`}>{m.negative} negative</span>
+                    <span className={`font-medium ${m.negative > 0 ? "text-red-600" : "text-gray-400"}`}>{m.negative} neg</span>
                   </div>
                   {m.removed > 0 && (
                     <div className="flex items-center" style={{ gap: "0.375rem", marginTop: "0.25rem" }}>
@@ -369,10 +415,10 @@
 
           <div>
             <h3 className="text-sm font-semibold text-gray-700 mb-1">Office Score Breakdown</h3>
-            <p className="text-xs text-gray-400 mb-3">SF, Seattle, and Canada have very limited volume.</p>
+            <p className="text-xs text-gray-400 mb-3">SF, Seattle, Canada, and Tokyo have very limited volume.</p>
             <div className="bg-white rounded-lg border border-gray-200 p-4" style={{ height: 280 }}>
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={officeReviews} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
+                <LineChart data={filteredOffice} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
                   <XAxis dataKey="month" tick={{ fontSize: 10 }} />
                   <YAxis domain={[3.0, 5.2]} tick={{ fontSize: 10 }} />
@@ -415,11 +461,14 @@
     ];
 
     // ─── TAB: INTERVIEW REVIEWS ───
-    function InterviewTab() {
-      const recent = interviewExperience.filter(d => d.total > 0);
+    function InterviewTab({ startMonth, endMonth }) {
+      const filtered = filterByRange(interviewExperience, startMonth, endMonth);
+      const recent = filtered.filter(d => d.total > 0);
       const curr = recent[recent.length - 1];
       const prev = recent.length >= 2 ? recent[recent.length - 2] : null;
-      const totalYTD = interviewExperience.reduce((s, m) => s + (m.total || 0), 0);
+      const totalInRange = filtered.reduce((s, m) => s + (m.total || 0), 0);
+
+      if (!curr) return <div className="text-center py-16 text-gray-400"><p className="text-lg font-medium">No interview data in selected range</p></div>;
 
       return (
         <div className="flex flex-col" style={{ gap: "1.5rem" }}>
@@ -428,7 +477,7 @@
               <span className="font-semibold">{curr?.month} Snapshot:</span>{" "}
               {curr?.total} interview review{curr?.total !== 1 ? "s" : ""} — {curr?.positive > 0 ? `${curr.positive}% positive` : ""}{curr?.negative > 0 ? `, ${curr.negative}% negative` : curr?.positive > 0 ? ", 0% negative" : ""}.
               {prev ? ` Prior month had ${prev.total} reviews with ${prev.negative}% negative.` : ""}
-              {" "}{totalYTD} total interview reviews YTD.
+              {" "}{totalInRange} total interview reviews in range.
               {" "}No Offer remains the dominant outcome across all months.
             </p>
           </div>
@@ -437,7 +486,7 @@
             <h3 className="text-sm font-semibold text-gray-700 mb-3">Candidate Sentiment Over Time</h3>
             <div className="bg-white rounded-lg border border-gray-200 p-4" style={{ height: 260 }}>
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={interviewExperience.filter(d => d.total > 0)} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
+                <BarChart data={recent} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
                   <XAxis dataKey="month" tick={{ fontSize: 11 }} />
                   <YAxis tick={{ fontSize: 11 }} />
@@ -454,7 +503,7 @@
           <div>
             <h3 className="text-sm font-semibold text-gray-700 mb-3">Interview Outcomes by Month</h3>
             <div className="grid grid-cols-3 gap-3">
-              {interviewExperience.filter(d => d.total > 0).reverse().slice(0, 6).map((m, i) => (
+              {[...recent].reverse().slice(0, 6).map((m, i) => (
                 <div key={i} className="bg-white rounded-lg border border-gray-200 p-3">
                   <p className="text-sm font-semibold text-gray-900 mb-2">{m.month}</p>
                   <p className="text-xs text-gray-500 mb-2">{m.total} reviews</p>
@@ -524,7 +573,7 @@
                 <div className="grid grid-cols-2 gap-2 text-sm">
                   <div><span className="text-gray-500 text-xs">Platform Focus</span><p className="text-gray-800">{a.platform}</p></div>
                   <div><span className="text-gray-500 text-xs">Months Active</span><p className="text-gray-800">{a.monthsActive}</p></div>
-                  <div><span className="text-gray-500 text-xs">YTD Progress</span><p className="text-gray-800">{a.progressYTD}</p></div>
+                  <div><span className="text-gray-500 text-xs">All-Time Progress</span><p className="text-gray-800">{a.progressAllTime}</p></div>
                   <div><span className="text-gray-500 text-xs">Cost</span><p className="text-gray-800">{a.cost}</p></div>
                 </div>
                 <div className="bg-gray-50 rounded p-2 text-sm">
@@ -537,10 +586,10 @@
           <div className="bg-white rounded-lg border border-gray-200 p-4">
             <h3 className="text-sm font-semibold text-gray-700 mb-2">Removal Summary</h3>
             <div className="grid grid-cols-4 gap-4 text-center">
-              <div><p className="text-2xl font-bold" style={{ color: "#C20075" }}>{totalRemoved}</p><p className="text-xs text-gray-500">Total Removed YTD</p></div>
+              <div><p className="text-2xl font-bold" style={{ color: "#C20075" }}>{totalRemoved}</p><p className="text-xs text-gray-500">Total Removed All-Time</p></div>
               <div><p className="text-2xl font-bold text-gray-800">4</p><p className="text-xs text-gray-500">Active Agencies</p></div>
               <div><p className="text-2xl font-bold text-green-600">3</p><p className="text-xs text-gray-500">Delivering Results</p></div>
-              <div><p className="text-2xl font-bold text-yellow-600">1</p><p className="text-xs text-gray-500">Double-Bill Flag</p></div>
+              <div><p className="text-2xl font-bold text-yellow-600">1</p><p className="text-xs text-gray-500">In Progress</p></div>
             </div>
           </div>
         </div>
@@ -557,7 +606,7 @@
       { month: "November 2025", pros: [{ theme: "Innovative product", detail: "Pride in the technology and its market differentiation." }, { theme: "Smart colleagues", detail: "High-caliber team members remain top positive." }], cons: [{ theme: "Fear-based leadership", detail: "Resurgent theme — reviews cite dismissive responses to feedback." }, { theme: "Performance management fairness", detail: "Shifting quotas and opaque evaluation continue as pain point." }] },
       { month: "December 2025", pros: [{ theme: "Benefits & perks", detail: "End-of-year bonuses and holiday perks appreciated." }, { theme: "Technical excellence", detail: "Opportunities to work with ML/AI and large-scale systems." }], cons: [{ theme: "Mass negative review spike", detail: "All 7 December reviews were negative — coordinated or coincidental." }, { theme: "Leadership trust erosion", detail: "Pattern of broken promises and lack of transparency cited." }, { theme: "Career progression uncertainty", detail: "Unclear promotion timelines and criteria." }] },
       { month: "January 2026", pros: [{ theme: "Learning & growth environment", detail: "Real responsibility, skill-building, and career development praised by multiple reviewers." }, { theme: "Smart colleagues & teamwork", detail: "Strong technical peers and trust-based collaboration highlighted." }], cons: [{ theme: "Organizational churn & re-orgs", detail: "Constant restructuring and turnover. Senior leadership accused of creating a 'hot mess.'" }, { theme: "Fear-based leadership", detail: "Staged employer brand vs. reality. Management distrust deepening." }, { theme: "Curated reviews concern", detail: "Accusations that positive reviews are solicited by senior leadership." }] },
-      { month: "February 2026", pros: [{ theme: "Learning density & exposure", detail: "Volume of projects and rapid skill development valued even by detractors." }, { theme: "Compensation & benefits", detail: "Consistently praised — pay, free lunch, perks remain a draw." }], cons: [{ theme: "Organizational churn & start-stop cycle", detail: "Dominant theme — 10+ initiatives killed before impact. Hiring push then layoffs." }, { theme: "Weak executive leadership", detail: "CEO top-down control, executive team as 'yes-men', zero accountability for failures." }, { theme: "Career growth & mental health", detail: "Explicit warnings about career damage and mental health toll." }, { theme: "Retention crisis signal", detail: "Senior departures, remote worker layoffs, and hiring freezes cited across multiple reviews." }] },
+      { month: "February 2026", pros: [{ theme: "Learning density & exposure", detail: "Volume of projects and rapid skill development valued even by detractors." }, { theme: "Compensation & benefits", detail: "Consistently praised — pay, free lunch, perks remain a draw." }, { theme: "Practical technical work", detail: "Late-month review praises hands-on coding, bug fixing, and reliable team support." }], cons: [{ theme: "Organizational churn & start-stop cycle", detail: "Dominant theme — 10+ initiatives killed before impact. Hiring push then layoffs." }, { theme: "Weak executive leadership", detail: "CEO top-down control, executive team as 'yes-men', zero accountability for failures." }, { theme: "Career growth & mental health", detail: "Explicit warnings about career damage and mental health toll." }, { theme: "Abusive leadership & exploitation", detail: "Two Executive Assistant reviews describe 'abusive leadership', 'deeply destructive culture', and employees 'exploited and forced to work brutal shifts.'" }, { theme: "Retention crisis signal", detail: "Senior departures, remote worker layoffs, and hiring freezes cited across multiple reviews." }] },
     ];
 
     function getAllThemes() {
@@ -780,8 +829,18 @@
     // ─── MAIN DASHBOARD ───
     function ReputationDashboard() {
       const [activeTab, setActiveTab] = useState(0);
-      const lastUpdated = "February 19, 2026";
-      const tabContent = [<OverviewTab />, <GlassdoorTab />, <InterviewTab />, <AgencyTab />, <ThemeHistoryTab />, <MonthlyReportTab />];
+      const [startMonth, setStartMonth] = useState(ALL_MONTHS[0]);
+      const [endMonth, setEndMonth] = useState(ALL_MONTHS[ALL_MONTHS.length - 1]);
+      const lastUpdated = "March 2, 2026";
+
+      const tabContent = [
+        <OverviewTab startMonth={startMonth} endMonth={endMonth} />,
+        <GlassdoorTab startMonth={startMonth} endMonth={endMonth} />,
+        <InterviewTab startMonth={startMonth} endMonth={endMonth} />,
+        <AgencyTab />,
+        <ThemeHistoryTab />,
+        <MonthlyReportTab />,
+      ];
 
       return (
         <div className="min-h-screen bg-gray-50">
@@ -794,9 +853,12 @@
                 <h1 className="text-xl font-bold text-gray-900">Reputation Management Dashboard</h1>
                 <p className="text-sm" style={{ color: "#86868B" }}>Glassdoor · Indeed · Blind — Employer Brand Tracking</p>
               </div>
-              <div className="text-right">
-                <span className="text-xs" style={{ color: "#86868B" }}>Last updated</span>
-                <p className="text-sm font-medium" style={{ color: "#C20075" }}>{lastUpdated}</p>
+              <div className="flex items-center gap-4">
+                <DateRangeFilter startMonth={startMonth} endMonth={endMonth} onStartChange={setStartMonth} onEndChange={setEndMonth} />
+                <div className="text-right">
+                  <span className="text-xs" style={{ color: "#86868B" }}>Last updated</span>
+                  <p className="text-sm font-medium" style={{ color: "#C20075" }}>{lastUpdated}</p>
+                </div>
               </div>
             </div>
           </div>
