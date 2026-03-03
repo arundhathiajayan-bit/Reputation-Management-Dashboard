@@ -854,9 +854,9 @@
                 <h1 className="text-xl font-bold text-gray-900">Reputation Management Dashboard</h1>
                 <p className="text-sm" style={{ color: "#86868B" }}>Glassdoor · Indeed · Blind — Employer Brand Tracking</p>
               </div>
-              <div className="flex items-center gap-4">
-                <DateRangeFilter startMonth={startMonth} endMonth={endMonth} onStartChange={setStartMonth} onEndChange={setEndMonth} />
-                <div className="text-right">
+              <div className="flex items-center gap-6">
+                {activeTab < 4 && <DateRangeFilter startMonth={startMonth} endMonth={endMonth} onStartChange={setStartMonth} onEndChange={setEndMonth} />}
+                <div className={`${activeTab < 4 ? "border-l border-gray-200 pl-6" : ""} text-right`} style={{ whiteSpace: "nowrap" }}>
                   <span className="text-xs" style={{ color: "#86868B" }}>Last updated</span>
                   <p className="text-sm font-medium" style={{ color: "#C20075" }}>{lastUpdated}</p>
                 </div>
