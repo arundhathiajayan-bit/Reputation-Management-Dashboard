@@ -612,7 +612,9 @@
 
     function getAllThemes() {
       const fromReports = monthlyReports.map(r => ({ month: r.month, pros: r.reviewThemes.pros, cons: r.reviewThemes.cons }));
-      return [...historicalThemes, ...fromReports];
+      const historicalMonths = new Set(historicalThemes.map(h => h.month));
+      const uniqueFromReports = fromReports.filter(r => !historicalMonths.has(r.month));
+      return [...historicalThemes, ...uniqueFromReports];
     }
 
     function getThemeFrequency(allThemes) {
