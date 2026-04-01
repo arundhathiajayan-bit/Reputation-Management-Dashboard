@@ -90,17 +90,17 @@
     };
 
     const agencyTracker = [
-      { firm: "Removify", status: "Active", monthsActive: 11, platform: "Glassdoor", progressAllTime: "14 reviews removed", cadence: "Monthly", cost: "$500/mo + $500/removal", recentProgress: "Mar: 3 removals — 'Choose any company but this terrible one' (Mar 23), 'Beware the Hype – Most Positive Reviews Are Management-Curated' (Mar 24), 'Zero support and transparency. Harmful culture and poor guidance' (Mar 30). 3x $750 invoices. Feb: 3 removals." },
+      { firm: "Removify", status: "Active", monthsActive: 11, platform: "Glassdoor", progressAllTime: "14 reviews removed", cadence: "Monthly", cost: "$500/mo + $500/removal", recentProgress: "Mar: 3 removals — 'Choose any company but this terrible one' (Mar 23), 'Beware the Hype – Most Positive Reviews Are Management-Curated' (Mar 24), 'Zero support and transparency. Harmful culture and poor guidance' (Mar 30). Feb: 3 removals." },
       { firm: "Net Reputation", status: "Active", monthsActive: 8, platform: "Glassdoor, Indeed", progressAllTime: "6 reviews removed", cadence: "Monthly", cost: "$1,000/mo", recentProgress: "Mar: no new removals. Feb: no removals. Jan: 2 GD removals (strongest month)." },
       { firm: "Reputation Resolutions", status: "Active", monthsActive: 6, platform: "Indeed, Blind, Glassdoor", progressAllTime: "4 reviews removed", cadence: "As needed", cost: "Per removal", recentProgress: "Mar: no new removals. Feb: Glassdoor/Blind reviews still in progress. Jan: 1 Indeed removal." },
-      { firm: "CorpReputation", status: "Active", monthsActive: 3, platform: "Glassdoor", progressAllTime: "6 reviews removed", cadence: "Per removal", cost: "Per removal (card on file)", recentProgress: "Mar: 3 invoices (UQFFO3K6-0004 paid Mar 16, 0005 paid Mar 23, 0006 declined Mar 27 — card retry needed). Feb: 1 confirmed removal." },
+      { firm: "CorpReputation", status: "Active", monthsActive: 3, platform: "Glassdoor", progressAllTime: "6 reviews removed", cadence: "Per removal", cost: "Per removal (card on file)", recentProgress: "Mar: 3 confirmed removals. Feb: 1 confirmed removal." },
     ];
 
     const monthlyReports = [
       {
         month: "March 2026",
         status: "draft",
-        summary: "March showed meaningful improvement over February's record-low sentiment. 6 new reviews with 3 five-star, 2 three-star, and only 1 one-star — a significant shift from Feb's 7-negative onslaught. The Glassdoor score recovered to 3.8 (up from 3.7 in Feb), still 0.2 below the 4.0 target. Removal agencies had their strongest combined month: Removify delivered 3 confirmed removals and CorpReputation invoiced for 3 more (1 payment pending). Blind dropped from 3.1 to 3.0 — first movement in months. Indeed remains at 3.6 with no new review activity. Interview volume was low (3 reviews) with 2 positive and 1 negative, all from operations/accelerator roles in Sydney and NYC. Negative themes persist around leadership and organizational chaos, but March's 1-star review ('Dominating Attitude and Endless Chaos') was isolated rather than part of a pile-on.",
+        summary: "March showed meaningful improvement over February's record-low sentiment. 6 new reviews with 3 five-star, 2 three-star, and only 1 one-star — a significant shift from Feb's 7 negative reviews. The Glassdoor score recovered to 3.8 (up from 3.7 in Feb), still 0.2 below the 4.0 target. Removal agencies had their strongest combined month: Removify delivered 3 confirmed removals and CorpReputation invoiced for 3 more (1 payment pending). Blind dropped from 3.1 to 3.0 — first movement in months. Indeed remains at 3.6 with no new review activity. Interview volume was low (3 reviews) with 2 positive and 1 negative, all from operations/accelerator roles in Sydney and NYC. Negative themes persist around leadership and organizational chaos, but March's 1-star review ('Dominating Attitude and Endless Chaos') was isolated rather than part of a pile-on.",
         platformScores: [
           { platform: "Glassdoor", score: 3.8, change: "↑ 0.1", vsTarget: "Below 4.0 target" },
           { platform: "Indeed", score: 3.6, change: "No change", vsTarget: "Monitoring" },
@@ -108,10 +108,10 @@
         ],
         reputationMgmt: {
           removed: 6,
-          removedDetail: "3 GD via Removify ('Choose any company but this terrible one' Mar 23, 'Beware the Hype – Most Positive Reviews Are Management-Curated' Mar 24, 'Zero support and transparency. Harmful culture and poor guidance' Mar 30) + 3 GD via CorpReputation (invoices 0004, 0005, 0006 — 1 payment pending).",
+          removedDetail: "3 GD via Removify ('Choose any company but this terrible one' Mar 23, 'Beware the Hype – Most Positive Reviews Are Management-Curated' Mar 24, 'Zero support and transparency. Harmful culture and poor guidance' Mar 30) + 3 GD via CorpReputation.",
           flagged: 0,
           flaggedDetail: "No new reviews flagged for removal in March.",
-          partnerNotes: "Removify delivered 3 confirmed removals — strong month at $2,250 in removal fees plus $500/mo retainer. CorpReputation sent 3 invoices suggesting 3 removals but card continues to decline — invoice 0006 (Mar 27) needs retry. NetReputation and Reputation Resolutions quiet for second consecutive month.",
+          partnerNotes: "Removify delivered 3 confirmed removals — strongest performing agency this month. CorpReputation completed 3 removals. NetReputation and Reputation Resolutions quiet for second consecutive month — evaluate ROI.",
         },
         reviewThemes: {
           pros: [
@@ -120,9 +120,9 @@
             { theme: "Fast-paced learning environment", detail: "Even mixed reviews acknowledge the pace and exposure. 3-star reviewer notes 'fast paced' as a characteristic, consistent with learning density theme." },
           ],
           cons: [
-            { theme: "Leadership dominance & chaos", detail: "The lone 1-star review ('Dominating Attitude and Endless Chaos') from a former NYC Software Engineer describes dominating leadership and organizational disorder — echoing the persistent executive accountability theme." },
-            { theme: "Organizational talent & structure concerns", detail: "3-star review from a current Software Engineer describes the company as 'Unorganized, low talent' — a direct criticism of both structure and hiring quality." },
-            { theme: "Leadership quality vs. pace", detail: "'Fast paced but leadership is the worst' — anonymous current employee highlights the disconnect between company velocity and management quality." },
+            { theme: "Leadership dominance & chaos", detail: "Former NYC Software Engineer cites dominating leadership and organizational disorder." },
+            { theme: "Organizational talent & structure concerns", detail: "Current engineer criticizes hiring quality and structural disorganization." },
+            { theme: "Leadership quality vs. pace", detail: "Recurring disconnect between company velocity and management capability." },
           ],
         },
         interviewExp: {
@@ -134,7 +134,7 @@
         riskFlags: [
           { severity: "high", flag: "Glassdoor below 4.0 for five consecutive months (Nov–Mar) — longest streak" },
           { severity: "medium", flag: "Blind dropped to 3.0 from 3.1 — first decline, needs monitoring" },
-          { severity: "medium", flag: "CorpReputation card declining repeatedly (invoices 0003–0006) — payment process needs fixing" },
+          { severity: "medium", flag: "CorpReputation payment issues — card declining, needs resolution" },
           { severity: "medium", flag: "NetReputation and Reputation Resolutions inactive for 2 months — evaluate ROI" },
           { severity: "low", flag: "March sentiment improved over Feb (3 of 6 reviews positive vs 2 of 11) — early stabilization signal" },
         ],
@@ -653,7 +653,7 @@
       { month: "December 2025", pros: [{ theme: "Benefits & perks", detail: "End-of-year bonuses and holiday perks appreciated." }, { theme: "Technical excellence", detail: "Opportunities to work with ML/AI and large-scale systems." }], cons: [{ theme: "Mass negative review spike", detail: "All 7 December reviews were negative — coordinated or coincidental." }, { theme: "Leadership trust erosion", detail: "Pattern of broken promises and lack of transparency cited." }, { theme: "Career progression uncertainty", detail: "Unclear promotion timelines and criteria." }] },
       { month: "January 2026", pros: [{ theme: "Learning & growth environment", detail: "Real responsibility, skill-building, and career development praised by multiple reviewers." }, { theme: "Smart colleagues & teamwork", detail: "Strong technical peers and trust-based collaboration highlighted." }], cons: [{ theme: "Organizational churn & re-orgs", detail: "Constant restructuring and turnover. Senior leadership accused of creating a 'hot mess.'" }, { theme: "Fear-based leadership", detail: "Staged employer brand vs. reality. Management distrust deepening." }, { theme: "Curated reviews concern", detail: "Accusations that positive reviews are solicited by senior leadership." }] },
       { month: "February 2026", pros: [{ theme: "Learning density & exposure", detail: "Volume of projects and rapid skill development valued even by detractors." }, { theme: "Compensation & benefits", detail: "Consistently praised — pay, free lunch, perks remain a draw." }, { theme: "Practical technical work", detail: "Late-month review praises hands-on coding, bug fixing, and reliable team support." }], cons: [{ theme: "Organizational churn & start-stop cycle", detail: "Dominant theme — 10+ initiatives killed before impact. Hiring push then layoffs." }, { theme: "Weak executive leadership", detail: "CEO top-down control, executive team as 'yes-men', zero accountability for failures." }, { theme: "Career growth & mental health", detail: "Explicit warnings about career damage and mental health toll." }, { theme: "Abusive leadership & exploitation", detail: "Two Executive Assistant reviews describe 'abusive leadership', 'deeply destructive culture', and employees 'exploited and forced to work brutal shifts.'" }, { theme: "Retention crisis signal", detail: "Senior departures, remote worker layoffs, and hiring freezes cited across multiple reviews." }] },
-      { month: "March 2026", pros: [{ theme: "Growth opportunities & career development", detail: "Multiple 5-star reviews highlight good growth opportunities and investment in employee development." }, { theme: "Compensation & benefits", detail: "Benefits remain a consistent positive — praised by Senior Revenue Accountant in NYC." }, { theme: "Fast-paced learning environment", detail: "Even mixed reviews acknowledge the pace and exposure to complex problems." }], cons: [{ theme: "Leadership dominance & chaos", detail: "1-star review describes 'Dominating Attitude and Endless Chaos' — former NYC Software Engineer echoes executive accountability concerns." }, { theme: "Organizational talent & structure", detail: "Current Software Engineer describes company as 'Unorganized, low talent' — direct criticism of hiring quality and structure." }, { theme: "Leadership quality disconnect", detail: "'Fast paced but leadership is the worst' — the recurring gap between company velocity and management capability." }] },
+      { month: "March 2026", pros: [{ theme: "Growth opportunities & career development", detail: "Multiple 5-star reviews highlight good growth opportunities and investment in employee development." }, { theme: "Compensation & benefits", detail: "Benefits remain a consistent positive — praised by Senior Revenue Accountant in NYC." }, { theme: "Fast-paced learning environment", detail: "Even mixed reviews acknowledge the pace and exposure to complex problems." }], cons: [{ theme: "Leadership dominance & chaos", detail: "Former NYC Software Engineer cites dominating leadership and organizational disorder." }, { theme: "Organizational talent & structure", detail: "Current engineer criticizes hiring quality and structural disorganization." }, { theme: "Leadership quality disconnect", detail: "Recurring disconnect between company velocity and management capability." }] },
     ];
 
     function getAllThemes() {
